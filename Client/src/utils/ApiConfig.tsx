@@ -11,4 +11,5 @@ export class ApiConfig{
 
     static addTask = "http://localhost:3030/addtask"
     static getTask = "http://localhost:3030/gettask"
+    static deleteTask = "http://localhost:3030/deletetask"
 }

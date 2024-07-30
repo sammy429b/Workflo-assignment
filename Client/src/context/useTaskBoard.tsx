@@ -44,22 +44,17 @@ export const JobBoardProvider: React.FC<{ children: React.ReactNode }> = ({ chil
   ];
   const [taskBoard, setTaskBoard] = useState(taskBoardData);
 
+  console.log("taskBoard", taskBoard);
 
   const getTask = async () => {
     try {
       const response = await axios.post(ApiConfig.getTask, { userId }, { withCredentials: true });
       if (response.status === 200) {
         const data = response.data;
-
         const updatedTaskBoard = taskBoardData.map((column) => {
-          // console.log("column", column);
           const tasks = data.tasks.find((item: any) => item._id === column.id);
-
-          // console.log("tasks", tasks);
-
           if (tasks) {
             column.item = [...tasks.tasks];
-            // console.log(column.item)
           }
 
           return column;
@@ -81,19 +76,47 @@ export const JobBoardProvider: React.FC<{ children: React.ReactNode }> = ({ chil
       });
       console.log(response);
       if (response.status === 200) {
-        alert("Task added successfully");
-
-        const updatedTaskBoard = taskBoard.map((item) => {
-          if (item.id === task.status) {
-            item.item.push(task);
+        const data = response.data;
+        const updatedTaskBoard = taskBoardData.map((column) => {
+          const tasks = data.tasks.find((item: any) => item._id === column.id);
+          console.log(data.tasks);
+          if (tasks) {
+            column.item = [...tasks.tasks];
+            console.log(column.item);
+            console.log(column);
           }
 
-          return item;
+          return column;
         });
+
         setTaskBoard(updatedTaskBoard);
-        console.log();
       }
 
+    } catch (error) {
+      console.log(error);
+    }
+  }
+
+
+  const deleteTask = async (taskId,status) => {
+    console.log(taskId);
+    try {
+      const response = await axios.delete(ApiConfig.deleteTask, {
+        withCredentials: true,
+        data: { taskId }
+      });
+      console.log(response);
+      if (response.status === 200) {
+        const updatedTaskBoard = taskBoard.map((column) => {
+          if (column.id === status) {
+
+            column.item = column.item.filter((task) => task._id !== taskId);
+            console.log(column.item);
+          }
+          return column;
+        });
+        setTaskBoard(updatedTaskBoard);
+      }
     } catch (error) {
       console.log(error);
     }
@@ -104,15 +127,16 @@ export const JobBoardProvider: React.FC<{ children: React.ReactNode }> = ({ chil
     taskBoard,
     setTaskBoard,
     taskBoardData,
+    getTask,
     addTask,
-    getTask
+    deleteTask
   };
 
 
   useEffect(() => {
     getTask();
   }
-    , []);
+, []);
 
   return (
     <TaskBoardContext.Provider value={value}>
