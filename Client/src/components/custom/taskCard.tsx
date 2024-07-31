@@ -27,7 +27,7 @@ function TaskCard({ task, status, taskId }) {
       <div className="my-2 w-full rounded-lg border p-2 shadow-md">
         <div className="">
           <div className="my-2 flex items-center justify-between">
-            <EditJobPopup />
+            <EditJobPopup task={task} status={status} taskId={taskId} />
             <Trash2 size={20} className="hover:cursor-pointer" onClick={handleDeleteTask} />
           </div>
           <div>

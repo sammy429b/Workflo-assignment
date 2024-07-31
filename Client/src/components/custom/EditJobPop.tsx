@@ -24,40 +24,84 @@ import {
   SelectTrigger,
   SelectValue,
 } from "../ui/select";
-import { useForm } from "react-hook-form";
+import { useForm, SubmitHandler } from "react-hook-form";
 import { Textarea } from "../ui/textarea";
-
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useTaskBoard } from "@/context/useTaskBoard";
 
-export default function EditJobPopup() {
-  const {addTask} = useTaskBoard();
-  const { register, handleSubmit,reset } = useForm();
+interface TaskType {
+  _id?: string;
+  title: string;
+  status: string;
+  priority: string;
+  deadline: Date;
+  description: string;
+  details: string;
+  userId: string;
+}
 
-  const [status, setStatus] = useState<string>("");
-  const [priority, setPriority] = useState<string>("");
+interface EditJobPopupProps {
+  task: TaskType;
+  status: string;
+  taskId: string;
+}
 
 
-  const onSubmit = async(data: any) => {
-    data = {...data, status, priority};
-    try {
-      await addTask(data);
-      reset()
-    } catch (error) {
-      console.log("Error adding task", error);
+const updatedDateFormatter = (date: string) => {
+    const dateObj = new Date(date);
+    const day = dateObj.getDate();
+    const month = dateObj.getMonth() + 1;
+    const year = dateObj.getFullYear();
+    return `${year}-${month}-${day}`;
     }
-  }
+
+export default function EditJobPopup({ task, status: initialStatus, taskId }: EditJobPopupProps) {
+
+  const { updateTask } = useTaskBoard();
+
+  const { register, handleSubmit, reset, setValue } = useForm<TaskType>({
+    defaultValues: {
+      title: task.title || "",
+      description: updatedDateFormatter(task.description) || "",
+      deadline: task.deadline || "", 
+      details: task.details || "",
+    },
+  });
+
+  const [status, setStatus] = useState<string>(task.status || "");
+  const [priority, setPriority] = useState<string>(task.priority || "");
+
+  // Update form values when the task changes
+  useEffect(() => {
+    setStatus(task.status || "");
+    setPriority(task.priority || "");
+    setValue('title', task.title || "");
+    setValue('description', task.description || "");
+    setValue('deadline', task.deadline || ""); // Ensure date is correctly formatted
+    setValue('details', task.details || "");
+  }, [task, setValue]);
+
+  const onSubmit: SubmitHandler<TaskType> = async (data) => {
+    const updatedTask = { ...data, status, priority };
+    try {
+      console.log("Submitting task:", updatedTask);
+      await updateTask(updatedTask, taskId, status);
+      console.log("Submitting task:", updatedTask);
+    } catch (error) {
+      console.log("Error updating task", error);
+    }
+  };
 
   return (
     <div className="w-full">
       <Dialog>
         <DialogTrigger asChild>
-        <Pencil size={16} className="hover:cursor-pointer" />
+          <Pencil size={16} className="hover:cursor-pointer" />
         </DialogTrigger>
         <DialogContent className="scrollbar h-full w-4/5 max-w-screen-md overflow-y-auto rounded bg-slate-50 md:h-auto">
           <DialogHeader>
-            <div className="mt-4 flex w-full items-center justify-between" >
-              <DialogTitle className="text-2xl">Create a New Task</DialogTitle>
+            <div className="mt-4 flex w-full items-center justify-between">
+              <DialogTitle className="text-2xl">Edit Task</DialogTitle>
               <div className="flex">
                 <Button
                   variant="secondary"
@@ -78,9 +122,8 @@ export default function EditJobPopup() {
           </DialogHeader>
           <form onSubmit={handleSubmit(onSubmit)}>
             <div>
-              <input
+              <Input
                 type="text"
-                id=""
                 className="h-15 w-full border-none bg-transparent py-2 text-5xl outline-none"
                 placeholder="Title"
                 {...register("title")}
@@ -91,39 +134,18 @@ export default function EditJobPopup() {
                 <div className="flex w-1/5 items-center justify-between">
                   <CircleDashed />
                   <p>Status</p>
-                  <p></p>
                 </div>
                 <div className="w-2/5">
-                  <Select onValueChange={(value)=> (setStatus(value))} >
+                  <Select value={status} onValueChange={(value) => setStatus(value)}>
                     <SelectTrigger className="w-full">
                       <SelectValue placeholder="Not Selected" />
                     </SelectTrigger>
                     <SelectContent>
                       <SelectGroup>
-                        <SelectItem
-                          value="to do"
-                          className="hover:bg-slate-100"
-                        >
-                          To do
-                        </SelectItem>
-                        <SelectItem
-                          value="in progress"
-                          className="hover:bg-slate-100"
-                        >
-                          In Progress
-                        </SelectItem>
-                        <SelectItem
-                          value="under review"
-                          className="hover:bg-slate-100"
-                        >
-                          Under view
-                        </SelectItem>
-                        <SelectItem
-                          value="completed"
-                          className="hover:bg-slate-100"
-                        >
-                          Completed
-                        </SelectItem>
+                        <SelectItem value="to do" className="hover:bg-slate-100">To do</SelectItem>
+                        <SelectItem value="in progress" className="hover:bg-slate-100">In Progress</SelectItem>
+                        <SelectItem value="under review" className="hover:bg-slate-100">Under Review</SelectItem>
+                        <SelectItem value="completed" className="hover:bg-slate-100">Completed</SelectItem>
                       </SelectGroup>
                     </SelectContent>
                   </Select>
@@ -134,33 +156,18 @@ export default function EditJobPopup() {
                 <div className="flex w-1/5 items-center justify-between">
                   <TriangleAlert size={20} />
                   <p>Priority</p>
-                  <p></p>
                 </div>
                 <div className="w-2/5">
-                  <Select onValueChange={(value)=> (setPriority(value))}>
+                  <Select value={priority} onValueChange={(value) => setPriority(value)}>
                     <SelectTrigger className="w-full">
                       <SelectValue placeholder="Not Selected" />
                     </SelectTrigger>
                     <SelectContent>
                       <SelectGroup>
-                        <SelectItem value="low" className="hover:bg-slate-100">
-                          Low
-                        </SelectItem>
-                        <SelectItem
-                          value="medium"
-                          className="hover:bg-slate-100"
-                        >
-                          Medium
-                        </SelectItem>
-                        <SelectItem value="high" className="hover:bg-slate-100">
-                          High
-                        </SelectItem>
-                        <SelectItem
-                          value="urgent"
-                          className="hover:bg-slate-100"
-                        >
-                          Urgent
-                        </SelectItem>
+                        <SelectItem value="low" className="hover:bg-slate-100">Low</SelectItem>
+                        <SelectItem value="medium" className="hover:bg-slate-100">Medium</SelectItem>
+                        <SelectItem value="high" className="hover:bg-slate-100">High</SelectItem>
+                        <SelectItem value="urgent" className="hover:bg-slate-100">Urgent</SelectItem>
                       </SelectGroup>
                     </SelectContent>
                   </Select>
@@ -171,10 +178,9 @@ export default function EditJobPopup() {
                 <div className="flex w-1/5 items-center justify-between">
                   <Calendar size={20} />
                   <p>Deadline</p>
-                  <p></p>
                 </div>
                 <div className="w-2/5">
-                  <Input type="date" className="w-full"  {...register("deadline")} />
+                  <Input type="date" className="w-full" {...register("deadline")} />
                 </div>
               </div>
 
@@ -182,16 +188,18 @@ export default function EditJobPopup() {
                 <div className="flex w-1/5 items-center justify-between">
                   <Pencil size={20} />
                   <p>Description</p>
-                  <p></p>
                 </div>
                 <div className="w-2/5">
-                  <Input type="text" title="description" {...register("description")} className="Add information about task" />
+                  <Input
+                    type="text"
+                    {...register("description")}
+                    className="w-full"
+                  />
                 </div>
               </div>
 
               <div className="my-4 flex items-center justify-start gap-x-4">
                 <Textarea
-                  title="details"
                   placeholder="Start writing, or drag your own files here."
                   className="focus-visible:ring-0"
                   {...register("details")}
@@ -201,6 +209,7 @@ export default function EditJobPopup() {
             <DialogFooter>
               <div className="flex items-center justify-end">
                 <Button
+                  type="submit"
                   variant="secondary"
                   className="bg-blue-500 text-white hover:bg-blue-600"
                 >
@@ -212,6 +221,5 @@ export default function EditJobPopup() {
         </DialogContent>
       </Dialog>
     </div>
-
   );
 }

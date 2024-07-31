@@ -120,3 +120,31 @@ export const deleteTaskController = async (req: Request, res: Response) => {
         return res.status(500).json({ message: "Internal server error" });
     }
 }
+
+
+export const updateTaskController = async (req: Request, res: Response) => {
+    try {
+        const { taskId, task } = req.body;
+        console.log(req.body);
+        if (!taskId) {
+            return res.status(400).json({ message: "Task id is required" });
+        }
+
+        if (!task) {
+            return res.status(400).json({ message: "Task data is required" });
+        }
+
+        const objectId = new mongoose.Types.ObjectId(taskId)
+
+        const updatedTask = await Task.findByIdAndUpdate(objectId, task, { new: true });
+
+        if (!updatedTask) {
+            return res.status(404).json({ message: "Task not found" });
+        }
+
+        res.status(200).json({ message: "Task updated successfully" });
+    } catch (error) {
+        console.error("Error updating task:", error);
+        return res.status(500).json({ message: "Internal server error" });
+    }
+}

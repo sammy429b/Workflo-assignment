@@ -20,6 +20,16 @@ interface TaskType {
   userId: string;
 }
 
+interface TaskBoardContextType {
+  taskBoard: Item[];
+  setTaskBoard: React.Dispatch<React.SetStateAction<Item[]>>;
+  taskBoardData: Item[];
+  getTask: () => void;
+  addTask: (task: TaskType) => void;
+  deleteTask: (taskId: string, status: string) => void;
+  updateTask: (task: TaskType, taskId: string, status: string) => void;
+}
+
 export const priorityBlockColor = {
   "low": "#0ECC5A",
   "medium": "#FFA235",
@@ -27,7 +37,7 @@ export const priorityBlockColor = {
   "urgent": "#FF6B6B",
 };
 
-export const TaskBoardContext = createContext<any>(null);
+export const TaskBoardContext = createContext<TaskBoardContextType | undefined>(undefined);
 
 export const useTaskBoard = () => {
   return React.useContext(TaskBoardContext);
@@ -98,7 +108,7 @@ export const JobBoardProvider: React.FC<{ children: React.ReactNode }> = ({ chil
   }
 
 
-  const deleteTask = async (taskId,status) => {
+  const deleteTask = async (taskId, status) => {
     console.log(taskId);
     try {
       const response = await axios.delete(ApiConfig.deleteTask, {
@@ -123,20 +133,48 @@ export const JobBoardProvider: React.FC<{ children: React.ReactNode }> = ({ chil
   }
 
 
+   const updateTask = async (task: TaskType, taskId) => {
+    try {
+      const formData = { task, taskId};
+      console.log(formData);
+      const response = await axios.put(ApiConfig.updateTask, formData , {
+        withCredentials: true
+      });
+      console.log(response);
+      if (response.status === 200) {
+        const data = response.data;
+        const updatedTaskBoard = taskBoardData.map((column) => {
+          const tasks = data.tasks.find((item: any) => item._id === column.id);
+          if (tasks) {
+            column.item = [...tasks.tasks];
+          }
+
+          return column;
+        });
+
+        setTaskBoard(updatedTaskBoard);
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  }
+
+
   const value = {
     taskBoard,
     setTaskBoard,
     taskBoardData,
     getTask,
     addTask,
-    deleteTask
+    deleteTask,
+    updateTask
   };
 
 
   useEffect(() => {
     getTask();
   }
-, []);
+    , []);
 
   return (
     <TaskBoardContext.Provider value={value}>

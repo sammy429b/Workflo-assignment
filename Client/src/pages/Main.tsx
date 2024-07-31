@@ -7,7 +7,6 @@ import { useTaskBoard } from "@/context/useTaskBoard";
 import { ApiConfig } from "@/utils/ApiConfig";
 import axios from "axios";
 import { ArrowDownUp } from "lucide-react";
-import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 
 const Main = () => {
