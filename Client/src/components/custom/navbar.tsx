@@ -2,8 +2,28 @@ import { DropdownMenuDemo } from './profile'
 import { Button } from '../ui/button'
 import { ArrowDownUp } from 'lucide-react'
 import CreateTaskPopup from './createTaskPopup'
+import axios from 'axios';
+import { ApiConfig } from '@/utils/ApiConfig';
+import {  useNavigate } from 'react-router-dom';
+import { useAuth } from '@/context/useAuth';
 
 function navbar() {
+  const { handleLogoutAuth } = useAuth();
+  const navigate = useNavigate();
+  const toggleLogout = async () => {
+    try {
+      const response = await axios.get(ApiConfig.logout, {
+        withCredentials: true,
+      });
+      console.log(response);
+      if (response) {
+        handleLogoutAuth();
+        navigate("/");
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
   return (
     <>
         <header>

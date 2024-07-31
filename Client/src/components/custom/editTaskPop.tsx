@@ -34,62 +34,55 @@ interface TaskType {
   title: string;
   status: string;
   priority: string;
-  deadline: Date;
+  deadline: string;
   description: string;
   details: string;
   userId: string;
 }
 
-interface EditJobPopupProps {
+interface EditTaskPopupProps {
   task: TaskType;
-  status: string;
   taskId: string;
 }
 
 
-const updatedDateFormatter = (date: string) => {
-    const dateObj = new Date(date);
-    const day = dateObj.getDate();
-    const month = dateObj.getMonth() + 1;
-    const year = dateObj.getFullYear();
-    return `${year}-${month}-${day}`;
-    }
 
-export default function EditTaskPopup({ task, status: initialStatus, taskId }: EditJobPopupProps) {
-  
+export default function EditTaskPopup({ task, taskId }: EditTaskPopupProps) {
   const [status, setStatus] = useState<string>(task.status || "");
   const [priority, setPriority] = useState<string>(task.priority || "");
-  
+
   const { updateTask } = useTaskBoard();
 
-  const { register, handleSubmit, reset, setValue } = useForm<TaskType>({
+  const { register, handleSubmit, setValue, formState: { errors } } = useForm<TaskType & { deadline: string }>({
     defaultValues: {
       title: task.title || "",
-      description: updatedDateFormatter(task.description) || "",
-      deadline: task.deadline || "", 
+      description: task.description || "",
+      deadline: task.deadline ,
       details: task.details || "",
     },
   });
 
-
-  // Update form values when the task changes
   useEffect(() => {
     setStatus(task.status || "");
     setPriority(task.priority || "");
     setValue('title', task.title || "");
     setValue('description', task.description || "");
-    setValue('deadline', task.deadline || ""); // Ensure date is correctly formatted
+    setValue('deadline', task.deadline);
     setValue('details', task.details || "");
   }, [task, setValue]);
 
-  const onSubmit: SubmitHandler<TaskType> = async (data) => {
-    const updatedTask = { ...data, status, priority };
+  const onSubmit: SubmitHandler<TaskType & { deadline: string }> = async (data) => {
+    const updatedTask: TaskType = {
+      ...data,
+      status,
+      priority,
+      deadline: data.deadline,
+    };
     try {
-      console.log("Submitting task:", updatedTask);
       await updateTask(updatedTask, taskId, status);
-      console.log("Submitting task:", updatedTask);
+      console.log("Task updated:", updatedTask);
     } catch (error) {
-      console.log("Error updating task", error);
+      console.error("Error updating task", error);
     }
   };
 
@@ -127,8 +120,9 @@ export default function EditTaskPopup({ task, status: initialStatus, taskId }: E
                 type="text"
                 className="h-15 w-full border-none bg-transparent py-2 text-5xl outline-none"
                 placeholder="Title"
-                {...register("title")}
+                {...register("title", { required: "Title is required" })}
               />
+              {errors.title && <p className="text-red-500">{errors.title.message}</p>}
             </div>
             <div>
               <div className="my-3 flex items-center justify-start gap-x-4">
@@ -180,7 +174,12 @@ export default function EditTaskPopup({ task, status: initialStatus, taskId }: E
                   <p>Deadline</p>
                 </div>
                 <div className="w-2/5">
-                  <Input type="date" className="w-full" {...register("deadline")} />
+                  <Input
+                    type="date"
+                    className="w-full"
+                    {...register("deadline", { required: "Deadline is required" })}
+                  />
+                  {errors.deadline && <p className="text-red-500">{errors.deadline.message}</p>}
                 </div>
               </div>
 

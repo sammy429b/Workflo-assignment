@@ -14,13 +14,13 @@ interface TaskType {
   title: string;
   status: string;
   priority: string;
-  deadline: Date;
+  deadline: string;
   description: string;
   details: string;
   userId: string;
 }
 
-interface TaskBoardContextType {
+export interface TaskBoardContextType {
   taskBoard: Item[];
   setTaskBoard: React.Dispatch<React.SetStateAction<Item[]>>;
   taskBoardData: Item[];
@@ -40,8 +40,13 @@ export const priorityBlockColor = {
 export const TaskBoardContext = createContext<TaskBoardContextType | undefined>(undefined);
 
 export const useTaskBoard = () => {
-  return React.useContext(TaskBoardContext);
+  const context = React.useContext(TaskBoardContext);
+  if (context === undefined) {
+    throw new Error('useTaskBoard must be used within a TaskBoardProvider');
+  }
+  return context;
 }
+
 
 export const JobBoardProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
 
@@ -108,7 +113,7 @@ export const JobBoardProvider: React.FC<{ children: React.ReactNode }> = ({ chil
   }
 
 
-  const deleteTask = async (taskId, status) => {
+  const deleteTask = async (taskId:string, status:string) => {
     console.log(taskId);
     try {
       const response = await axios.delete(ApiConfig.deleteTask, {
@@ -133,7 +138,7 @@ export const JobBoardProvider: React.FC<{ children: React.ReactNode }> = ({ chil
   }
 
 
-   const updateTask = async (task: TaskType, taskId) => {
+   const updateTask = async (task: TaskType, taskId:string) => {
     try {
       const formData = { task, taskId};
       console.log(formData);

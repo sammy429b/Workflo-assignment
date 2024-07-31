@@ -1,4 +1,4 @@
-import { Calendar, CircleHelp, Filter, PlusCircle, Share, Share2, Sparkles } from "lucide-react"
+import { Calendar, CircleHelp, Filter, Share2, Sparkles } from "lucide-react"
 import { Input } from "../ui/input";
 import CreateTaskPopup from "./createTaskPopup";
 import { useAuth } from "@/context/useAuth";

@@ -11,7 +11,6 @@ import {
   Calendar,
   CircleDashed,
   Pencil,
-  Plus,
   PlusCircle,
   Share2,
   Star,
@@ -38,7 +37,6 @@ export default function CreateTaskPopup() {
 
   const [status, setStatus] = useState<string>("");
   const [priority, setPriority] = useState<string>("");
-
 
   const onSubmit = async (data: any) => {
     data = { ...data, status, priority };

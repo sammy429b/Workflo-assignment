@@ -26,7 +26,7 @@ function TaskBoard() {
                   <TaskJobPopup initialStatus={column.id}/>
                 </div>
                     {column.item.map((task, index) => (
-                      <TaskCard task={task} key={index} status={column.id} taskId={task._id} />
+                      <TaskCard task={task} key={index} status={column.id ?? ''} taskId={task._id ?? ''} />
                     ))}
                   </div>
                 </div>

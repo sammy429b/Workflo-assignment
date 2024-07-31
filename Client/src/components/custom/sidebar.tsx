@@ -1,4 +1,4 @@
-import { BellDot, ChevronsRight, CircleDashed, Home, LayoutDashboard, LineChart, PlusCircle, Settings2, Users2 } from "lucide-react"
+import { BellDot, ChevronsRight, CircleDashed, Home, LayoutDashboard, LineChart, Settings2, Users2 } from "lucide-react"
 import { Button } from "../ui/button"
 import { Link, useNavigate } from "react-router-dom"
 import { Avatar, AvatarFallback, AvatarImage } from "@radix-ui/react-avatar"

@@ -25,7 +25,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "../ui/select";
-import { useForm, SubmitHandler } from "react-hook-form";
+import { useForm } from "react-hook-form";
 import { Textarea } from "../ui/textarea";
 import { useEffect, useState } from "react";
 import { useTaskBoard } from "@/context/useTaskBoard";
@@ -35,19 +35,15 @@ interface TaskType {
   title: string;
   status: string;
   priority: string;
-  deadline: Date;
+  deadline: string;
   description: string;
   details: string;
   userId: string;
 }
 
-interface EditJobPopupProps {
-  task: TaskType;
-  status: string;
-  taskId: string;
-}
 
-export default function AddTaskPopup({ initialStatus}) {
+
+export default function AddTaskPopup({ initialStatus}: { initialStatus: string }) {
 
   const { addTask } = useTaskBoard();
 
