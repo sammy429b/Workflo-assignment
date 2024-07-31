@@ -82,7 +82,7 @@ export const JobBoardProvider: React.FC<{ children: React.ReactNode }> = ({ chil
     }
   }
 
-
+  // Add Task to the task board 
   const addTask = async (task: TaskType) => {
     task = { ...task, userId };
     try {
@@ -105,6 +105,7 @@ export const JobBoardProvider: React.FC<{ children: React.ReactNode }> = ({ chil
         });
 
         setTaskBoard(updatedTaskBoard);
+        alert("Task Added Successfully");
       }
 
     } catch (error) {
@@ -112,7 +113,7 @@ export const JobBoardProvider: React.FC<{ children: React.ReactNode }> = ({ chil
     }
   }
 
-
+  // Delete Task from the task board
   const deleteTask = async (taskId:string, status:string) => {
     console.log(taskId);
     try {
@@ -131,13 +132,14 @@ export const JobBoardProvider: React.FC<{ children: React.ReactNode }> = ({ chil
           return column;
         });
         setTaskBoard(updatedTaskBoard);
+        alert("Task Deleted Successfully");
       }
     } catch (error) {
       console.log(error);
     }
   }
 
-
+  // Update Task to the task board
    const updateTask = async (task: TaskType, taskId:string) => {
     try {
       const formData = { task, taskId};
@@ -158,6 +160,7 @@ export const JobBoardProvider: React.FC<{ children: React.ReactNode }> = ({ chil
         });
 
         setTaskBoard(updatedTaskBoard);
+        alert("Task Updated Successfully");
       }
     } catch (error) {
       console.log(error);
