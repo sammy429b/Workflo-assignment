@@ -4,7 +4,7 @@ export interface TaskSchemaType extends Document {
   title: string;
   status: "to do" | "in progress" | "under review" | "completed";
   priority: "low" | "medium" | "urgent";
-  deadline: Date;
+  deadline: string;
   description: string;
   details: string;
   userId: mongoose.Types.ObjectId;
@@ -21,20 +21,17 @@ const taskSchema = new Schema<TaskSchemaType>({
     enum: ["to do", "in progress", "under review", "completed"],
   },
   priority: {
-    required: true,
     type: String,
     enum: ["low", "medium", "urgent"],
   },
   deadline: {
     required: true,
-    type: Date,
+    type: String,
   },
   description: {
-    required: true,
     type: String,
   },
   details: {
-    required: true,
     type: String,
   },
   userId: {

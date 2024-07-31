@@ -15,22 +15,37 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const nodemailer_1 = __importDefault(require("nodemailer"));
 const dotenv_1 = __importDefault(require("dotenv"));
 dotenv_1.default.config();
+const username = process.env.USER;
+const app_password = process.env.PASS;
+if (!username || !app_password) {
+    throw new Error('Missing environment variables for email configuration.');
+}
+console.log('Username:', username);
+console.log('App Password:', app_password);
 const transporter = nodemailer_1.default.createTransport({
-    host: "smtp.ethereal.email",
+    service: 'Gmail',
+    host: 'smtp.gmail.com',
     port: 587,
     secure: false,
     auth: {
-        user: process.env.USER,
-        pass: process.env.PASS
-    }
+        user: "your@gmail.com",
+        pass: "yourpassword",
+    },
+    logger: true,
+    debug: true,
 });
 const sendOTP = (receiver, otp) => __awaiter(void 0, void 0, void 0, function* () {
-    const info = yield transporter.sendMail({
-        from: `"Sammy from app" ${process.env.USER}`,
-        to: `${receiver}`,
-        subject: 'Your OTP for Verification',
-        text: `Your OTP is: ${otp}`
-    });
-    console.log("Message sent: %s", info.messageId);
+    try {
+        const info = yield transporter.sendMail({
+            from: `"Sammy from app" <${username}>`,
+            to: receiver,
+            subject: 'Your OTP for Verification',
+            text: `Your OTP is: ${otp}`,
+        });
+        console.log('Message sent: %s', info.messageId);
+    }
+    catch (error) {
+        console.error('Error sending email:', error);
+    }
 });
 exports.default = sendOTP;

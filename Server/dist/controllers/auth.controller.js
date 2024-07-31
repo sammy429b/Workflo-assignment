@@ -12,14 +12,14 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.forgetPasswordController = exports.changePasswordController = exports.loginController = exports.registerController = void 0;
+exports.logoutController = exports.loginController = exports.registerController = void 0;
 const user_model_1 = __importDefault(require("../models/user.model"));
 const bcrypt_1 = __importDefault(require("bcrypt"));
+const JWT_1 = require("../utils/JWT");
 const registerController = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const { username, email, password } = req.body;
         if (!username || !email || !password) {
-            // console.log(username, email, password)
             return res.status(400).json({ "message": "Username or password missing in request" });
         }
         const existingUser = yield user_model_1.default.findOne({ email });
@@ -56,7 +56,17 @@ const loginController = (req, res) => __awaiter(void 0, void 0, void 0, function
             return res.status(400).json({ message: "Wrong password" });
         }
         // Passwords match, user authenticated
-        res.status(200).json({ message: "Login successful" });
+        const token = yield (0, JWT_1.JWTsign)(existingUser._id.toString());
+        if (!token) {
+            return res.status(500).json({ message: "Could not generate token" });
+        }
+        res.cookie('token', token, {
+            sameSite: 'lax',
+            httpOnly: true,
+            secure: false,
+        });
+        console.log(token);
+        res.status(201).json({ message: "Login successful", userId: existingUser._id, username: existingUser.username });
     }
     catch (error) {
         console.error("Error in login route", error);
@@ -64,39 +74,14 @@ const loginController = (req, res) => __awaiter(void 0, void 0, void 0, function
     }
 });
 exports.loginController = loginController;
-const changePasswordController = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+const logoutController = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        const { oldPassword, newPassowrd, email } = req.body;
-        if (!oldPassword || !newPassowrd) {
-            return res.status(400).json({ message: "Provide new and old both password" });
-        }
-        const user = yield user_model_1.default.findOne({ email });
-        if (!user) {
-            return res.status(404).json({ message: "User not found" });
-        }
-        const pass = user === null || user === void 0 ? void 0 : user.password;
-        const isPasswordMatch = yield bcrypt_1.default.compare(oldPassword, pass);
-        console.log(isPasswordMatch);
-        console.log(pass);
-        const hashedPassword = yield bcrypt_1.default.hash(newPassowrd, 10);
-        const newPass = yield user_model_1.default.updateOne({ email }, { $set: { password: hashedPassword } });
-        console.log(newPass);
-        return res.status(200).json({ message: "Successfully changed password" });
+        res.clearCookie('token');
+        res.send('Cookie cleared');
     }
     catch (error) {
-        console.log("error in ");
+        console.error("Error in login route", error);
+        res.status(500).json({ message: "Internal server error" });
     }
 });
-exports.changePasswordController = changePasswordController;
-const forgetPasswordController = (req, res) => {
-    try {
-        const { email } = req.body;
-        const user = user_model_1.default.findOne({ email });
-        if (!user) {
-            return res.status(400).json({ message: "user not found" });
-        }
-    }
-    catch (error) {
-    }
-};
-exports.forgetPasswordController = forgetPasswordController;
+exports.logoutController = logoutController;

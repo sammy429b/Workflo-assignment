@@ -24,7 +24,7 @@ var __importStar = (this && this.__importStar) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const otpGenerator = __importStar(require("otp-generator"));
-const generateOTP = (length, options) => {
+const generateOTP = (length = 6, options) => {
     const defaultOptions = {
         digits: true,
         lowerCaseAlphabets: false,
