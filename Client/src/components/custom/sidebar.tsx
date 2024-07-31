@@ -5,10 +5,11 @@ import { Avatar, AvatarFallback, AvatarImage } from "@radix-ui/react-avatar"
 import { ApiConfig } from "@/utils/ApiConfig";
 import axios from "axios";
 import { useAuth } from "@/context/useAuth";
+import CreateTaskPopup from "./createTaskPopup";
 
 function Sidebar() {
     const navigate = useNavigate();
-    const{handleLogoutAuth} = useAuth();
+    const{handleLogoutAuth, userName} = useAuth();
     const toggleLogout = async () => {
         try {
           const response = await axios.get(ApiConfig.logout, {
@@ -27,17 +28,16 @@ function Sidebar() {
         <>
             <div className="flex flex-col justify-center items-center gap-y-4 mt-8">
                 <div className="">
-                    <div className="flex justify-start gap-x-4 items-center  pl-8 pr-4">
+                    <div className="flex justify-bet gap-x-4 items-center  pl-8 pr-4">
                         <Avatar className="w-1/6 rounded-xl" >
                             <AvatarImage src="https://github.com/shadcn.png" className="rounded-xl" />
                             <AvatarFallback >CN</AvatarFallback>
                         </Avatar>
-                        <p className="">Samy</p>
+                        <p className="font-semibold text-lg">{userName}</p>
                     </div>
-                    <div className="flex justify-between items-center mt-2 pl-8 pr-4">
+                    <div className=" w-full flex justify-between items-center mt-2 pl-8 pr-4">
                         <div className="flex items-center gap-x-2">
                             <BellDot />
-
                             <CircleDashed />
                             <ChevronsRight />
                         </div>
@@ -71,11 +71,8 @@ function Sidebar() {
                     </Link>
 
                 </div>
-                <div>
-                    <Button className="bg-violet-700 text-white flex justify-start ml-4 mr-6 items-center gap-x-2 text-md hover:bg-violet-800">
-                        Create new task
-                        <PlusCircle size={20} />
-                    </Button>
+                <div className="mr-10">
+                    <CreateTaskPopup />
                 </div>
             </div>
         </>

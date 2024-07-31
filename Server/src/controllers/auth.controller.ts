@@ -85,7 +85,7 @@ export const loginController = async (req: Request, res: Response) => {
 
         console.log(token)
 
-        res.status(201).json({ message: "Login successful", userId :existingUser._id });
+        res.status(201).json({ message: "Login successful", userId :existingUser._id, username: existingUser.username });
 
     } catch (error) {
         console.error("Error in login route", error);

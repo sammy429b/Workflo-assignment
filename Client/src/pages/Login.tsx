@@ -36,7 +36,7 @@ const Login = () => {
       console.log(response);
       const data = await response.data;
       if (response.status === 201) {
-        handleLoginAuth(values.email, data.userId);
+        handleLoginAuth(values.email, data.userId, data.username);
         Navigate("/main");
       }
       console.log(data);

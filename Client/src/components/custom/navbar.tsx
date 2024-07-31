@@ -1,7 +1,7 @@
 import { DropdownMenuDemo } from './profile'
 import { Button } from '../ui/button'
 import { ArrowDownUp } from 'lucide-react'
-import AddJobPopup from './addJobPopup'
+import CreateTaskPopup from './createTaskPopup'
 
 function navbar() {
   return (
@@ -20,7 +20,7 @@ function navbar() {
               <Button variant="secondary">
                 <ArrowDownUp />
               </Button>
-              <AddJobPopup />
+              <CreateTaskPopup />
             </div>
           </section>
         </header>

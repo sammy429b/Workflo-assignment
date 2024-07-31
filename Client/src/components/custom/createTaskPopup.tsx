@@ -12,6 +12,7 @@ import {
   CircleDashed,
   Pencil,
   Plus,
+  PlusCircle,
   Share2,
   Star,
   TriangleAlert,
@@ -31,17 +32,16 @@ import { Textarea } from "../ui/textarea";
 import { useState } from "react";
 import { useTaskBoard } from "@/context/useTaskBoard";
 
-export default function AddJobPopup() {
-  const {addTask} = useTaskBoard();
-  const { register, handleSubmit,reset } = useForm();
+export default function CreateTaskPopup() {
+  const { addTask } = useTaskBoard();
+  const { register, handleSubmit, reset } = useForm();
 
   const [status, setStatus] = useState<string>("");
   const [priority, setPriority] = useState<string>("");
-  const [open, setOpen] = useState(false);
 
 
-  const onSubmit = async(data: any) => {
-    data = {...data, status, priority};
+  const onSubmit = async (data: any) => {
+    data = { ...data, status, priority };
     try {
       await addTask(data);
       reset()
@@ -54,12 +54,9 @@ export default function AddJobPopup() {
     <div className="w-full">
       <Dialog>
         <DialogTrigger asChild>
-          <Button
-            variant={"secondary"}
-            className="flex items-center justify-center gap-x-1"
-          >
-            <Plus />
-            Add Job
+          <Button size={"sm"} className="bg-violet-700 text-white text-sm flex justify-start items-center gap-x-2 hover:bg-violet-800">
+            Create new task
+            <PlusCircle size={16} />
           </Button>
         </DialogTrigger>
         <DialogContent className="scrollbar h-full w-4/5 max-w-screen-md overflow-y-auto rounded bg-slate-50 md:h-auto">
@@ -102,7 +99,7 @@ export default function AddJobPopup() {
                   <p></p>
                 </div>
                 <div className="w-2/5">
-                  <Select onValueChange={(value)=> (setStatus(value))} >
+                  <Select onValueChange={(value) => (setStatus(value))} >
                     <SelectTrigger className="w-full">
                       <SelectValue placeholder="Not Selected" />
                     </SelectTrigger>
@@ -145,7 +142,7 @@ export default function AddJobPopup() {
                   <p></p>
                 </div>
                 <div className="w-2/5">
-                  <Select onValueChange={(value)=> (setPriority(value))}>
+                  <Select onValueChange={(value) => (setPriority(value))}>
                     <SelectTrigger className="w-full">
                       <SelectValue placeholder="Not Selected" />
                     </SelectTrigger>

@@ -1,5 +1,4 @@
 import React, { createContext, useState, useContext, useEffect, ReactNode } from 'react';
-import { set } from 'react-hook-form';
 
 // Define the shape of the AuthContext
 interface AuthContextType {
@@ -7,12 +6,14 @@ interface AuthContextType {
     userId: string;
     setUserMailId: React.Dispatch<React.SetStateAction<string>>;
     isAuthenticated: boolean;
-    handleLoginAuth: (mail: string) => void;
+    handleLoginAuth: (mail: string, userId: string, userName: string) => void;
     handleLogoutAuth: () => void;
     isMailId: boolean;
     setIsMailId: React.Dispatch<React.SetStateAction<boolean>>;
     isOTP: boolean;
     setIsOTP: React.Dispatch<React.SetStateAction<boolean>>;
+    userName: string;
+    setUserName: React.Dispatch<React.SetStateAction<string>>;
 }
 
 // Create the AuthContext with a default value
@@ -30,20 +31,23 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     const [isAuthenticated, setAuthenticated] = useState<boolean>(() => JSON.parse(localStorage.getItem("isAuthenticated") || 'false'));
     const [isOTP, setIsOTP] = useState<boolean>(false);
     const [isMailId, setIsMailId] = useState<boolean>(false);
+    const [userName, setUserName] = useState<string>(() => JSON.parse(localStorage.getItem("userName") || '""'));
 
     useEffect(() => {
         localStorage.setItem("userMailId", JSON.stringify(userMailId));
         localStorage.setItem("userId", JSON.stringify(userId));
+        localStorage.setItem("userName", JSON.stringify(userName));
     }, [userMailId]);
 
     useEffect(() => {
         localStorage.setItem("isAuthenticated", JSON.stringify(isAuthenticated));
     }, [isAuthenticated]);
 
-    const handleLoginAuth = (mail: string, id:string) => {
+    const handleLoginAuth = (mail: string, id: string, name: string) => {
         setUserMailId(mail);
         setUserId(id);
         setAuthenticated(true);
+        setUserName(name);
     };
 
     const handleLogoutAuth = () => {
@@ -53,7 +57,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     };
 
     return (
-        <AuthContext.Provider value={{ userMailId, setUserMailId,isMailId, setIsMailId, isAuthenticated, handleLoginAuth, handleLogoutAuth, isOTP, setIsOTP, userId }}>
+        <AuthContext.Provider value={{ userMailId, setUserMailId, isMailId, setIsMailId, isAuthenticated, handleLoginAuth, handleLogoutAuth, isOTP, setIsOTP, userId , userName }}>
             {children}
         </AuthContext.Provider>
     );

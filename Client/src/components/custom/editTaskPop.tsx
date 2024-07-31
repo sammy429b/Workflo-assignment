@@ -55,8 +55,11 @@ const updatedDateFormatter = (date: string) => {
     return `${year}-${month}-${day}`;
     }
 
-export default function EditJobPopup({ task, status: initialStatus, taskId }: EditJobPopupProps) {
-
+export default function EditTaskPopup({ task, status: initialStatus, taskId }: EditJobPopupProps) {
+  
+  const [status, setStatus] = useState<string>(task.status || "");
+  const [priority, setPriority] = useState<string>(task.priority || "");
+  
   const { updateTask } = useTaskBoard();
 
   const { register, handleSubmit, reset, setValue } = useForm<TaskType>({
@@ -68,8 +71,6 @@ export default function EditJobPopup({ task, status: initialStatus, taskId }: Ed
     },
   });
 
-  const [status, setStatus] = useState<string>(task.status || "");
-  const [priority, setPriority] = useState<string>(task.priority || "");
 
   // Update form values when the task changes
   useEffect(() => {
@@ -166,7 +167,6 @@ export default function EditJobPopup({ task, status: initialStatus, taskId }: Ed
                       <SelectGroup>
                         <SelectItem value="low" className="hover:bg-slate-100">Low</SelectItem>
                         <SelectItem value="medium" className="hover:bg-slate-100">Medium</SelectItem>
-                        <SelectItem value="high" className="hover:bg-slate-100">High</SelectItem>
                         <SelectItem value="urgent" className="hover:bg-slate-100">Urgent</SelectItem>
                       </SelectGroup>
                     </SelectContent>
