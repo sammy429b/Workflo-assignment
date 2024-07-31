@@ -19,9 +19,9 @@ services:
     environment:
       SERVER_PORT: 3030
       MONGO_URI: "mongodb://mongo:27017/auth"
-      secret_key: "FBQ7ujQq96eGEF1lZiOxLWAg+ue6wV0H45C0ythHpF4"
+      SECRET_KEY: "FBQ7ujQq96eGEF1lZiOxLWAg+ue6wV0H45C0ythHpF4"
       REDIS_HOST: "redis"
-      REDIS_PORT: 6379
+      REDIS_PORT: 6379cls
 
   mongo:
     image: mongo:latest
