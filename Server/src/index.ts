@@ -16,7 +16,7 @@ const port = process.env.SERVER_PORT;
 app.use(express.json());
 app.use(cookieParser())
 app.use(cors({
-    origin: 'http://localhost:8080',
+    origin: 'https://strong-nougat-22d92e.netlify.app/',
     credentials: true
 }));
 app.use("/",authRoute)

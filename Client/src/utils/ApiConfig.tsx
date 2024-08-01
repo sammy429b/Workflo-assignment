@@ -1,16 +1,18 @@
 export class ApiConfig{
-    static register = "http://localhost:3030/register"
-    static login = "http://localhost:3030/login"
-    static logout = "http://localhost:3030/logout"
+    // static BASE_URL = "http://localhost:3030"
+    static BASE_URL = "https://workflo-backend-5alu.onrender.com/"
+    static register =  this.BASE_URL + "/register"
+    static login = this.BASE_URL + "/login"
+    static logout = this.BASE_URL + "/logout"
 
-    static change = "http://localhost:3030/password/change"
-    static reset = "http://localhost:3030/password/reset"
-    static verifyotp = "http://localhost:3030/password/otp"
-    static getotp = "http://localhost:3030/password/email"
+    static change = this.BASE_URL + "/password/change"
+    static reset = this.BASE_URL + "/password/reset"
+    static verifyotp = this.BASE_URL + "/password/otp"
+    static getotp = this.BASE_URL + "/password/email"
 
 
-    static addTask = "http://localhost:3030/addtask"
-    static getTask = "http://localhost:3030/gettask"
-    static deleteTask = "http://localhost:3030/deletetask"
-    static updateTask = "http://localhost:3030/updatetask"
+    static addTask = this.BASE_URL + "/addtask"
+    static getTask = this.BASE_URL + "/gettask"
+    static deleteTask = this.BASE_URL + "/deletetask"
+    static updateTask = this.BASE_URL + "/updatetask"
 }
