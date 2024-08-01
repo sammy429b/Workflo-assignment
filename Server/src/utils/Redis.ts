@@ -15,10 +15,17 @@ if (!process.env.REDIS_PORT) {
 }
 
 // Initialize Redis client
+// const redis = new Redis({
+//     host: redisHost,
+//     port: redisPort,
+// });
+
 const redis = new Redis({
-    host: redisHost,
-    port: redisPort
-});
+    host: redisHost || '127.0.0.1',
+    port: redisPort,
+    password: process.env.REDIS_PASSWORD || 'your_strong_password',
+    db: 0,
+  });
 
 redis.on('connect', ()=>{
     console.log(`redis running on port ${redisPort}`)
