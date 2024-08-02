@@ -13,12 +13,15 @@ dotenv.config();
 
 const port = process.env.SERVER_PORT;
 
+const corsOptions = {
+    origin: 'http://localhost:8080',
+    credentials: true,
+    // optionsSuccessStatus: 200
+}
+
 app.use(express.json());
 app.use(cookieParser())
-app.use(cors({
-    origin: 'https://strong-nougat-22d92e.netlify.app/',
-    credentials: true
-}));
+app.use(cors(corsOptions));
 app.use("/",authRoute)
 app.use("/",changePasswordRoute)
 app.use("/",forgotPasswordRoute)

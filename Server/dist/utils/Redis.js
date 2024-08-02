@@ -16,9 +16,15 @@ if (!process.env.REDIS_PORT) {
     console.warn('REDIS_PORT is not set. Using default: 6379');
 }
 // Initialize Redis client
+// const redis = new Redis({
+//     host: redisHost,
+//     port: redisPort,
+// });
 const redis = new ioredis_1.Redis({
-    host: redisHost,
-    port: redisPort
+    host: redisHost || '127.0.0.1',
+    port: redisPort,
+    password: process.env.REDIS_PASSWORD || 'your_strong_password',
+    db: 0,
 });
 redis.on('connect', () => {
     console.log(`redis running on port ${redisPort}`);

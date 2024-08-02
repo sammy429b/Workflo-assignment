@@ -15,12 +15,14 @@ const cookie_parser_1 = __importDefault(require("cookie-parser"));
 const app = (0, express_1.default)();
 dotenv_1.default.config();
 const port = process.env.SERVER_PORT;
+const corsOptions = {
+    origin: ['http://localhost:4173', 'https://strong-nougat-22d92e.netlify.app/', 'http://localhost:8080'],
+    credentials: true,
+    optionsSuccessStatus: 200
+};
 app.use(express_1.default.json());
 app.use((0, cookie_parser_1.default)());
-app.use((0, cors_1.default)({
-    origin: 'http://localhost:8080',
-    credentials: true
-}));
+app.use((0, cors_1.default)());
 app.use("/", auth_route_1.default);
 app.use("/", changePassword_route_1.default);
 app.use("/", forgotPassword_route_1.default);

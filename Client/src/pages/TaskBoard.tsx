@@ -1,9 +1,15 @@
 import TaskJobPopup from "@/components/custom/addTaskPopUp";
 import TaskCard from "@/components/custom/taskCard";
 import { useTaskBoard } from "@/context/useTaskBoard"
+import { useEffect } from "react";
 
 function TaskBoard() {
-  const { taskBoard } = useTaskBoard();
+  const { taskBoard, getTask } = useTaskBoard();
+
+  useEffect(() => {
+    getTask();
+  }, []);
+
   return (
     <>
       <div className="w-full px-6">

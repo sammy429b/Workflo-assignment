@@ -1,6 +1,6 @@
 export class ApiConfig{
-    // static BASE_URL = "http://localhost:3030"
-    static BASE_URL = "https://workflo-backend-5alu.onrender.com/"
+    static BASE_URL = "http://localhost:3030"
+    // static BASE_URL = "https://workflo-backend-5alu.onrender.com/"
     static register =  this.BASE_URL + "/register"
     static login = this.BASE_URL + "/login"
     static logout = this.BASE_URL + "/logout"

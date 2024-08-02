@@ -1,6 +1,6 @@
 import { ApiConfig } from '@/utils/ApiConfig';
 import axios from 'axios';
-import React, { createContext, useEffect, useState } from 'react';
+import React, { createContext, useState } from 'react';
 import { useAuth } from './useAuth';
 
 interface Item {
@@ -59,7 +59,7 @@ export const JobBoardProvider: React.FC<{ children: React.ReactNode }> = ({ chil
   ];
   const [taskBoard, setTaskBoard] = useState(taskBoardData);
 
-  console.log("taskBoard", taskBoard);
+  // console.log("taskBoard", taskBoard);
 
   const getTask = async () => {
     try {
@@ -179,10 +179,10 @@ export const JobBoardProvider: React.FC<{ children: React.ReactNode }> = ({ chil
   };
 
 
-  useEffect(() => {
-    getTask();
-  }
-    , []);
+  // useEffect(() => {
+  //   getTask();
+  // }
+  //   , []);
 
   return (
     <TaskBoardContext.Provider value={value}>
